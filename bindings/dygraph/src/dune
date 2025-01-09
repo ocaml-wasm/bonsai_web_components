@@ -3,7 +3,10 @@
  (preprocess
   (pps ppx_jane js_of_ocaml-ppx gen_js_api.ppx bonsai.ppx_bonsai
     ppx_pattern_bind))
+ (inline_tests (flags -drop-tag no-js -drop-tag 64-bits-only -drop-tag no-wasm) (modes js wasm))
  (js_of_ocaml
+  (javascript_files ../dist/dygraph.min.js ../dist/lodash_merge.js))
+ (wasm_of_ocaml
   (javascript_files ../dist/dygraph.min.js ../dist/lodash_merge.js))
  (libraries base bonsai.extra bonsai_web bonsai_web_ui_low_level_vdom core
    virtual_dom.css_gen gen_js_api js_of_ocaml ppx_css.inline_css

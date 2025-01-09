@@ -6604,8 +6604,7 @@ let%expect_test "[Form.return] is not settable" =
   Handle.show handle;
   [%expect
     {|
-    ("Form.return was set, but setting is ignored."
-     lib/bonsai/web_ui/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
+    ("Form.return was set, but setting is ignored." :0:-1)
     (Ok 5)
 
     ==============
@@ -6630,8 +6629,7 @@ let%expect_test "[Form.return] is not settable, but can log the attempted set if
   Handle.show handle;
   [%expect
     {|
-    ("Form.return was set, but setting is ignored." (set_value 5)
-     lib/bonsai/web_ui/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
+    ("Form.return was set, but setting is ignored." (set_value 5) :0:-1)
     (Ok 5)
 
     ==============
@@ -6678,10 +6676,8 @@ let%expect_test "Partially settable form via [Form.return] and [Form.return_sett
   Handle.show handle;
   [%expect
     {|
-    ("Form.return was set, but setting is ignored." (set_value 1)
-     lib/bonsai/web_ui/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
-    ("Form.return was set, but setting is ignored." (set_value 3)
-     lib/bonsai/web_ui/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
+    ("Form.return was set, but setting is ignored." (set_value 1) :0:-1)
+    ("Form.return was set, but setting is ignored." (set_value 3) :0:-1)
     (Ok (
       (form_return          1)
       (form_return_settable 20)

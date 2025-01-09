@@ -238,11 +238,11 @@ module For_testing : sig
       | Drag_start of
           { container_start : float
           ; separator_start : float
-          ; mouse_pos : int
+          ; mouse_pos : float
           }
       | Drag_cancelled
-      | Drag_move of { mouse_pos : int }
-      | Drag_end of { mouse_pos : int }
+      | Drag_move of { mouse_pos : float }
+      | Drag_end of { mouse_pos : float }
     [@@deriving sexp_of]
   end
 

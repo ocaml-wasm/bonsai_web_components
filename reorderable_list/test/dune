@@ -4,5 +4,6 @@
    bonsai_web_ui_drag_and_drop_testing
    bonsai_web_ui_element_size_hooks_testing bonsai_web_ui_reorderable_list
    core virtual_dom.ui_effect)
+ (inline_tests (flags -drop-tag no-js -drop-tag 64-bits-only -drop-tag no-wasm) (modes js wasm))
  (preprocess
   (pps ppx_jane bonsai.ppx_bonsai)))

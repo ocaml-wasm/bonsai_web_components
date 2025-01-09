@@ -31,7 +31,7 @@ module Test : sig
   (* To make the symmetric tests work, this sets the container to a square so the
      dimensions in the Horizontal and Vertical case are the same *)
   val set_container_size : t -> float -> unit
-  val simulate_drag : t -> delta:int -> unit
+  val simulate_drag : t -> delta:float -> unit
   val update_parameters : t -> (Parameters.t -> Parameters.t) -> unit
   val action : t -> Split_pane.For_testing.Action.t -> unit
 end = struct
@@ -81,7 +81,9 @@ end = struct
 
     let test_component ~parameters graph =
       let state, inject_action = Split_pane.For_testing.state_machine ~parameters graph in
-      let%arr parameters and state and inject_action in
+      let%arr parameters = parameters
+      and state = state
+      and inject_action = inject_action in
       { state; parameters; inject_action }
     ;;
   end
@@ -125,7 +127,7 @@ end = struct
     Handle.do_actions
       t.handle
       [ Drag_start
-          { container_start = 0.; separator_start = first_panel_size; mouse_pos = 0 }
+          { container_start = 0.; separator_start = first_panel_size; mouse_pos = 0. }
       ; Drag_move { mouse_pos = delta }
       ]
   ;;
@@ -176,7 +178,7 @@ let%expect_test "Dragging works" =
       |}];
     Test.action
       t
-      (Drag_start { container_start = 0.; separator_start = 250.; mouse_pos = 247 });
+      (Drag_start { container_start = 0.; separator_start = 250.; mouse_pos = 247. });
     Test.show_sizes t;
     [%expect
       {|
@@ -188,7 +190,7 @@ let%expect_test "Dragging works" =
       └────────┴───────┴────────┘
       |}];
     (* Nothing changes yet, but as we move the sizes update *)
-    Test.action t (Drag_move { mouse_pos = 237 });
+    Test.action t (Drag_move { mouse_pos = 237. });
     Test.show_sizes t;
     [%expect
       {|
@@ -199,7 +201,7 @@ let%expect_test "Dragging works" =
       │ 48.0392% │   -   │ 51.9608% │
       └──────────┴───────┴──────────┘
       |}];
-    Test.action t (Drag_move { mouse_pos = 257 });
+    Test.action t (Drag_move { mouse_pos = 257. });
     Test.show_sizes t;
     [%expect
       {|
@@ -225,9 +227,9 @@ let%expect_test "Dragging works" =
         └──────────┴───────┴──────────┘
         |}]
     in
-    Test.action t (Drag_end { mouse_pos = 265 });
+    Test.action t (Drag_end { mouse_pos = 265. });
     final_sizes ();
-    Test.action t (* no-op *) (Drag_move { mouse_pos = 260 });
+    Test.action t (* no-op *) (Drag_move { mouse_pos = 260. });
     final_sizes ();
     ())
 ;;
@@ -248,7 +250,7 @@ let%expect_test "Dragging is subject to constraints" =
       │  50%   │   -   │  50%   │
       └────────┴───────┴────────┘
       |}];
-    Test.simulate_drag t ~delta:10000;
+    Test.simulate_drag t ~delta:10000.;
     Test.show_sizes t;
     [%expect
       {|
@@ -259,7 +261,7 @@ let%expect_test "Dragging is subject to constraints" =
       │ 99.0196% │   -   │ 98.0392bp │
       └──────────┴───────┴───────────┘
       |}];
-    Test.simulate_drag t ~delta:(-20000);
+    Test.simulate_drag t ~delta:(-20000.);
     Test.show_sizes t;
     [%expect
       {|
@@ -273,7 +275,7 @@ let%expect_test "Dragging is subject to constraints" =
     (* But this also works with custom constraints *)
     Test.update_parameters t (fun params ->
       { params with constraints = [ Constraint.min_px ~panel:Second 100. ] });
-    Test.simulate_drag t ~delta:10000;
+    Test.simulate_drag t ~delta:10000.;
     Test.show_sizes t;
     [%expect
       {|
@@ -461,9 +463,9 @@ let%expect_test "Resizing is subject to constraints" =
       }
     ~initial_container_size:60.
     (fun t ->
-      Test.show_sizes t;
-      [%expect
-        {|
+       Test.show_sizes t;
+       [%expect
+         {|
         ┌───────┬───────┬───────┐
         │   1   │  sep  │   2   │
         ├───────┼───────┼───────┤
@@ -471,11 +473,11 @@ let%expect_test "Resizing is subject to constraints" =
         │  50%  │   -   │  50%  │
         └───────┴───────┴───────┘
         |}];
-      (* Works if we resize a bit more *)
-      Test.set_container_size t 110.;
-      Test.show_sizes t;
-      [%expect
-        {|
+       (* Works if we resize a bit more *)
+       Test.set_container_size t 110.;
+       Test.show_sizes t;
+       [%expect
+         {|
         ┌───────┬───────┬───────┐
         │   1   │  sep  │   2   │
         ├───────┼───────┼───────┤
@@ -483,12 +485,12 @@ let%expect_test "Resizing is subject to constraints" =
         │  50%  │   -   │  50%  │
         └───────┴───────┴───────┘
         |}];
-      (* But then the constraint kicks in if we go more than that and it's no longer
+       (* But then the constraint kicks in if we go more than that and it's no longer
           possible to keep the split 50-50 *)
-      Test.set_container_size t 200.;
-      Test.show_sizes t;
-      [%expect
-        {|
+       Test.set_container_size t 200.;
+       Test.show_sizes t;
+       [%expect
+         {|
         ┌───────┬───────┬────────┐
         │   1   │  sep  │   2    │
         ├───────┼───────┼────────┤
@@ -503,11 +505,11 @@ let show_constraints constraints ~expect =
     ~parameters:{ Parameters.default with constraints }
     ~initial_container_size:510.
     (fun t ->
-       Test.simulate_drag t ~delta:(-1000);
+       Test.simulate_drag t ~delta:(-1000.);
        print_endline "Min:";
        Test.show_sizes t;
        print_endline "Max:";
-       Test.simulate_drag t ~delta:1000;
+       Test.simulate_drag t ~delta:1000.;
        Test.show_sizes t;
        expect ())
 ;;

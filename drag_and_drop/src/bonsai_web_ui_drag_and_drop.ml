@@ -6,8 +6,8 @@ open Js_of_ocaml
 
 module Style =
   [%css
-  stylesheet
-    {|
+    stylesheet
+      {|
       .no_select {
         user-select: none;
       }
@@ -40,7 +40,7 @@ module State_machine_model = struct
   type ('source_id, 'target_id) dragging =
     { source : 'source_id
     ; target : 'target_id option
-        (* If [has_moved] is false, then the mouse has been clicked, but we do
+      (* If [has_moved] is false, then the mouse has been clicked, but we do
        not yet consider the dragging to have started, so for all visual
        purposes we are [Not_dragging]. *)
     ; has_moved : bool
@@ -98,8 +98,10 @@ type ('source_id, 'target_id) t =
 [@@deriving fields ~getters]
 
 let project_target
-  :  ('source, 'target_a) t -> map:('target_a -> 'target_b)
-  -> unmap:('target_b -> 'target_a) -> ('source, 'target_b) t
+  :  ('source, 'target_a) t
+  -> map:('target_a -> 'target_b)
+  -> unmap:('target_b -> 'target_a)
+  -> ('source, 'target_b) t
   =
   fun t ~map ~unmap ->
   let source ~id = t.source ~id in
@@ -131,9 +133,9 @@ module For_testing = struct
     [@@deriving sexp, equal]
 
     let to_internal_actions
-      (type source target)
-      (module Source : S with type t = source)
-      (module Target : S with type t = target)
+          (type source target)
+          (module Source : S with type t = source)
+          (module Target : S with type t = target)
       = function
       | Start_drag source ->
         [ Action.Started_drag
@@ -193,11 +195,11 @@ let add_event_listener, remove_event_listener =
 ;;
 
 let create_with_drop_position
-  (type source target)
-  ~source_id:(module Source : S with type t = source)
-  ~target_id:(module Target : S with type t = target)
-  ~on_drop
-  graph
+      (type source target)
+      ~source_id:(module Source : S with type t = source)
+      ~target_id:(module Target : S with type t = target)
+      ~on_drop
+      graph
   =
   let model, inject =
     Bonsai.state_machine1
@@ -247,11 +249,12 @@ let create_with_drop_position
   in
   let path = Bonsai_private.path graph in
   let universe_suffix =
-    let%arr path in
+    let%arr path = path in
     Bonsai_private.Path.to_unique_identifier_string path
   in
   let source =
-    let%arr inject and universe_suffix in
+    let%arr inject = inject
+    and universe_suffix = universe_suffix in
     fun ~id ->
       Vdom.Attr.many
         [ Vdom.Attr.on_pointerdown (fun event ->
@@ -270,11 +273,8 @@ let create_with_drop_position
             let bounding_rect =
               (Js.Opt.to_option event##.currentTarget |> Option.value_exn)##getBoundingClientRect
             in
-            let optdef_float x =
-              x |> Js.Optdef.to_option |> Option.value_exn |> Js.to_float |> Int.of_float
-            in
-            let width = optdef_float bounding_rect##.width in
-            let height = optdef_float bounding_rect##.height in
+            let width = Int.of_float (Js.to_float bounding_rect##.width) in
+            let height = Int.of_float (Js.to_float bounding_rect##.height) in
             let top = Int.of_float (Js.to_float bounding_rect##.top) in
             let left = Int.of_float (Js.to_float bounding_rect##.left) in
             let size = { Size.width; height } in
@@ -300,14 +300,18 @@ let create_with_drop_position
   let path_for_pointermove = Bonsai_private.path graph in
   let path_for_pointerup = Bonsai_private.path graph in
   let on_deactivate =
-    let%arr path_for_pointermove and path_for_pointerup in
+    let%arr path_for_pointermove = path_for_pointermove
+    and path_for_pointerup = path_for_pointerup in
     Effect.all_unit
       [ remove_event_listener path_for_pointermove
       ; remove_event_listener path_for_pointerup
       ]
   in
   let on_activate =
-    let%arr inject and path_for_pointermove and path_for_pointerup and universe_suffix in
+    let%arr inject = inject
+    and path_for_pointermove = path_for_pointermove
+    and path_for_pointerup = path_for_pointerup
+    and universe_suffix = universe_suffix in
     let%bind.Effect () =
       add_event_listener
         Dom_html.Event.pointermove
@@ -369,7 +373,7 @@ let create_with_drop_position
   in
   let () = Bonsai.Edge.lifecycle ~on_deactivate ~on_activate graph in
   let sentinel =
-    let%arr inject in
+    let%arr inject = inject in
     fun ~name ->
       Vdom.Attr.many
         [ For_testing.Inject_hook.attr (fun action ->
@@ -380,7 +384,8 @@ let create_with_drop_position
         ]
   in
   let drop_target =
-    let%arr inject and universe_suffix in
+    let%arr inject = inject
+    and universe_suffix = universe_suffix in
     fun ~id ->
       Vdom.Attr.many
         [ Vdom.Attr.on_pointerup (fun event ->
@@ -392,15 +397,19 @@ let create_with_drop_position
             (Sexp.to_string_mach (Target.sexp_of_t id))
         ]
   in
-  let%arr model and inject and source and sentinel and drop_target in
+  let%arr model = model
+  and inject = inject
+  and source = source
+  and sentinel = sentinel
+  and drop_target = drop_target in
   { model; inject; source; drop_target; sentinel }
 ;;
 
 let create
-  (type source target)
-  ~source_id:(module Source : S with type t = source)
-  ~target_id:(module Target : S with type t = target)
-  ~on_drop
+      (type source target)
+      ~source_id:(module Source : S with type t = source)
+      ~target_id:(module Target : S with type t = target)
+      ~on_drop
   =
   create_with_drop_position
     ~source_id:(module Source)
@@ -414,7 +423,7 @@ let dragged_element t ~f graph =
   | Dragging ({ source; _ } as dragging) ->
     let item = f source graph in
     let%arr { position; offset; size; _ } = dragging
-    and item in
+    and item = item in
     let x = position.x - offset.x in
     let y = position.y - offset.y in
     Vdom.Node.div

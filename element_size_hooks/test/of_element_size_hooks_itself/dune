@@ -2,5 +2,6 @@
  (name bonsai_web_ui_element_size_hooks_test)
  (libraries bonsai_web bonsai_web_test bonsai_web_ui_element_size_hooks
    bonsai_web_ui_element_size_hooks_testing core)
+ (inline_tests (flags -drop-tag no-js -drop-tag 64-bits-only -drop-tag no-wasm) (modes js wasm))
  (preprocess
   (pps bonsai.ppx_bonsai ppx_jane)))

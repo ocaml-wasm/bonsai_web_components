@@ -6,5 +6,6 @@
    expect_test_helpers_core.expect_test_helpers_base
    patdiff.expect_test_patdiff js_of_ocaml core_kernel.nonempty_list
    virtual_dom.ui_effect)
+ (inline_tests (flags -drop-tag no-js -drop-tag 64-bits-only -drop-tag no-wasm) (modes js wasm))
  (preprocess
   (pps ppx_jane js_of_ocaml-ppx bonsai.ppx_bonsai)))

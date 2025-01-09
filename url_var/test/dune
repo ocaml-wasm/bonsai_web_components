@@ -2,5 +2,6 @@
  (name bonsai_web_ui_url_var_test)
  (libraries base_quickcheck bonsai_web bonsai_web_ui_url_var core
    expect_test_helpers_core uri_parsing uri_parsing_test)
+; (inline_tests (flags -drop-tag no-js -drop-tag 64-bits-only -drop-tag no-wasm) (modes js wasm))
  (preprocess
   (pps ppx_jane)))

@@ -196,8 +196,8 @@ end
 
 module Style =
   [%css
-  stylesheet
-    {|
+    stylesheet
+      {|
       :root {
         --separator-color: #eee;
       }
@@ -286,12 +286,12 @@ let get_parent_element_exn (element : Js_of_ocaml.Dom_html.element Js_of_ocaml.J
 ;;
 
 let get_mouse_pos
-  ~(mouse_event : Js_of_ocaml.Dom_html.mouseEvent Js_of_ocaml.Js.t)
-  ~direction
+      ~(mouse_event : Js_of_ocaml.Dom_html.mouseEvent Js_of_ocaml.Js.t)
+      ~direction
   =
   match direction with
-  | Split_dir.Horizontal -> mouse_event##.clientX
-  | Vertical -> mouse_event##.clientY
+  | Split_dir.Horizontal -> Js_of_ocaml.Js.to_float mouse_event##.clientX
+  | Vertical -> Js_of_ocaml.Js.to_float mouse_event##.clientY
 ;;
 
 module Container_dimensions = struct
@@ -316,11 +316,11 @@ module Action = struct
     | Drag_start of
         { container_start : float
         ; separator_start : float
-        ; mouse_pos : int
+        ; mouse_pos : float
         }
     | Drag_cancelled
-    | Drag_move of { mouse_pos : int }
-    | Drag_end of { mouse_pos : int }
+    | Drag_move of { mouse_pos : float }
+    | Drag_end of { mouse_pos : float }
   [@@deriving sexp_of]
 end
 
@@ -410,13 +410,13 @@ module State = struct
   ;;
 
   let change_container_size
-    t
-    ~container_dimensions
-    ~direction
-    ~separator_size_px
-    ~constraints
-    ~initial_size
-    ~on_container_resize
+        t
+        ~container_dimensions
+        ~direction
+        ~separator_size_px
+        ~constraints
+        ~initial_size
+        ~on_container_resize
     =
     let new_panel_and_size =
       match t.container_dimensions with
@@ -443,15 +443,15 @@ module State = struct
   ;;
 
   let update_size_during_drag
-    t
-    ~drag
-    ~mouse_pos
-    ~direction
-    ~separator_size_px
-    ~constraints
+        t
+        ~drag
+        ~mouse_pos
+        ~direction
+        ~separator_size_px
+        ~constraints
     =
     let { Drag.container_start; mouse_offset } = drag in
-    let new_first_px = Float.of_int mouse_pos +. mouse_offset -. container_start in
+    let new_first_px = mouse_pos +. mouse_offset -. container_start in
     update_size
       t
       ~panel_and_size:(Panel_and_size.create First (Size.px new_first_px))
@@ -529,7 +529,7 @@ let state_machine ~parameters graph =
                 ~on_container_resize
                 ~constraints
             | Drag_start { container_start; separator_start; mouse_pos }, _ ->
-              let mouse_offset = separator_start -. Float.of_int mouse_pos in
+              let mouse_offset = separator_start -. mouse_pos in
               { state with current_drag = Some { container_start; mouse_offset } }
             | Drag_cancelled, _ -> { state with current_drag = None }
             | Drag_move { mouse_pos }, Some drag ->
@@ -569,7 +569,7 @@ let state_machine ~parameters graph =
       ~equal:[%equal: Parameters.t]
       parameters
       ~callback:
-        (let%map inject_action in
+        (let%map inject_action = inject_action in
          fun (_ : Parameters.t) -> inject_action Parameters_changed)
       graph
   in
@@ -618,30 +618,30 @@ let create_separator ~listeners ~direction ~size ~extra_attr =
 ;;
 
 let create_from_parameters
-  ?(panel_extra_attrs = Bonsai.return Panel_extra_attrs.default)
-  ?(container_extra_attrs = Bonsai.return [])
-  parameters
-  ~first_panel
-  ~second_panel
-  graph
+      ?(panel_extra_attrs = Bonsai.return Panel_extra_attrs.default)
+      ?(container_extra_attrs = Bonsai.return [])
+      parameters
+      ~first_panel
+      ~second_panel
+      graph
   =
   let state, inject_action = state_machine ~parameters graph in
   let size_change_attr =
     (* compute this attr separately in order to be precise about its dependencies
        (only depending on inject_action) so that the tracker isn't being continuously
        recreated *)
-    let%arr inject_action in
+    let%arr inject_action = inject_action in
     Size_tracker.on_change (fun { border_box = { width; height }; content_box = _ } ->
       inject_action
         (Container_resized (Container_dimensions.Fields.create ~width ~height)))
   in
   let container_builder =
-    let%arr state
-    and inject_action
-    and size_change_attr
+    let%arr state = state
+    and inject_action = inject_action
+    and size_change_attr = size_change_attr
     and { Parameters.separator_size_px; direction; separator_color; _ } = parameters
-    and container_extra_attrs
-    and panel_extra_attrs in
+    and container_extra_attrs = container_extra_attrs
+    and panel_extra_attrs = panel_extra_attrs in
     let separator_listeners =
       if State.is_dragging state
       then Attr.empty
@@ -742,23 +742,25 @@ let create_from_parameters
       ; panel_sizes = State.panel_sizes ~direction ~separator_size_px state
       }
   in
-  let%arr container_builder and first_panel and second_panel in
+  let%arr container_builder = container_builder
+  and first_panel = first_panel
+  and second_panel = second_panel in
   container_builder first_panel second_panel
 ;;
 
 let create
-  ?(initial_size = Bonsai.return Parameters.default.initial_size)
-  ?(separator_size_px = Bonsai.return Parameters.default.separator_size_px)
-  ?separator_color
-  ?(on_container_resize = Bonsai.return Parameters.default.on_container_resize)
-  ?(constraints = Bonsai.return Parameters.default.constraints)
-  ?panel_extra_attrs
-  ?(container_extra_attrs = Bonsai.return [])
-  ~direction
-  ~first_panel
-  ~second_panel
-  ()
-  graph
+      ?(initial_size = Bonsai.return Parameters.default.initial_size)
+      ?(separator_size_px = Bonsai.return Parameters.default.separator_size_px)
+      ?separator_color
+      ?(on_container_resize = Bonsai.return Parameters.default.on_container_resize)
+      ?(constraints = Bonsai.return Parameters.default.constraints)
+      ?panel_extra_attrs
+      ?(container_extra_attrs = Bonsai.return [])
+      ~direction
+      ~first_panel
+      ~second_panel
+      ()
+      graph
   =
   let separator_color =
     match separator_color with
@@ -766,12 +768,12 @@ let create
     | None -> Bonsai.return None
   in
   let parameters =
-    let%arr initial_size
-    and separator_size_px
-    and separator_color
-    and on_container_resize
-    and constraints
-    and direction in
+    let%arr initial_size = initial_size
+    and separator_size_px = separator_size_px
+    and separator_color = separator_color
+    and on_container_resize = on_container_resize
+    and constraints = constraints
+    and direction = direction in
     { Parameters.initial_size
     ; separator_size_px
     ; separator_color

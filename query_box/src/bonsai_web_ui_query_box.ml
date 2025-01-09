@@ -81,30 +81,30 @@ type 'k t =
 [@@deriving fields ~getters]
 
 let create
-  (type k cmp)
-  (module Key : Bonsai.Comparator with type t = k and type comparator_witness = cmp)
-  ?(initial_query = "")
-  ?(max_visible_items = Bonsai.return 10)
-  ?(suggestion_list_kind = Bonsai.return Suggestion_list_kind.Transient_overlay)
-  ?(expand_direction = Bonsai.return Expand_direction.Down)
-  ?(on_focus = Bonsai.return On_focus.Focus_first_item)
-  ?(on_hover_item = Bonsai.return On_hover_item.Do_nothing)
-  ?(focused_item_attr = Bonsai.return Attr.empty)
-  ?(extra_list_container_attr = Bonsai.return Attr.empty)
-  ?(extra_input_attr = Bonsai.return Attr.empty)
-  ?(extra_attr = Bonsai.return Attr.empty)
-  ?(on_blur = Bonsai.return (Effect.return ()))
-  ?(modify_input_on_select = Bonsai.return (fun _focused_key _query -> ""))
-  ~f
-  ~on_select
-  ()
-  graph
+      (type k cmp)
+      (module Key : Bonsai.Comparator with type t = k and type comparator_witness = cmp)
+      ?(initial_query = "")
+      ?(max_visible_items = Bonsai.return 10)
+      ?(suggestion_list_kind = Bonsai.return Suggestion_list_kind.Transient_overlay)
+      ?(expand_direction = Bonsai.return Expand_direction.Down)
+      ?(on_focus = Bonsai.return On_focus.Focus_first_item)
+      ?(on_hover_item = Bonsai.return On_hover_item.Do_nothing)
+      ?(focused_item_attr = Bonsai.return Attr.empty)
+      ?(extra_list_container_attr = Bonsai.return Attr.empty)
+      ?(extra_input_attr = Bonsai.return Attr.empty)
+      ?(extra_attr = Bonsai.return Attr.empty)
+      ?(on_blur = Bonsai.return (Effect.return ()))
+      ?(modify_input_on_select = Bonsai.return (fun _focused_key _query -> ""))
+      ~f
+      ~on_select
+      ()
+      graph
   =
   let suggestion_list_is_initialized, initialize_suggestion_list =
     Bonsai.state false graph
   in
   let inject_initialize_suggestion_list =
-    let%arr initialize_suggestion_list in
+    let%arr initialize_suggestion_list = initialize_suggestion_list in
     initialize_suggestion_list true
   in
   let%sub { Model.query; suggestion_list_state; offset }, inject, items, _ =
@@ -125,8 +125,7 @@ let create
           (_ : _ Bonsai.Apply_action_context.t)
           (_, _, items, max_visible_items)
           model
-          action
-        ->
+          action ->
         let suggestion_list_state =
           (* We normalize which item is focused in case the list has changed
                  since the last action. Normalization just means setting the
@@ -226,13 +225,17 @@ let create
           then f query graph
           else Bonsai.return (Map.empty (module Key))
         in
-        let%arr model and inject and items and max_visible_items in
+        let%arr model = model
+        and inject = inject
+        and items = items
+        and max_visible_items = max_visible_items in
         model, inject, items, max_visible_items)
   in
   let focused_key =
     match%sub suggestion_list_state with
     | Focused key ->
-      let%arr key and items in
+      let%arr key = key
+      and items = items in
       (match Map.closest_key items `Less_or_equal_to key with
        | Some (key, _) -> Some key
        | None ->
@@ -240,14 +243,17 @@ let create
           | Some (key, _) -> Some key
           | None -> None))
     | First_item ->
-      let%arr items in
+      let%arr items = items in
       (match Map.min_elt items with
        | Some (key, _) -> Some key
        | None -> None)
     | Closed -> Bonsai.return None
   in
   let items =
-    let%arr items and max_visible_items and focused_key and offset in
+    let%arr items = items
+    and max_visible_items = max_visible_items
+    and focused_key = focused_key
+    and offset = offset in
     match focused_key with
     | Some focused_key ->
       let length = ref 0 in
@@ -298,16 +304,16 @@ let create
       (module Key)
       items
       ~f:(fun key item _graph ->
-        let%arr key
-        and item
-        and get_items
-        and focused_key
-        and focused_item_attr
-        and inject
-        and on_select
-        and query
-        and modify_input_on_select
-        and on_hover_item in
+        let%arr key = key
+        and item = item
+        and get_items = get_items
+        and focused_key = focused_key
+        and focused_item_attr = focused_item_attr
+        and inject = inject
+        and on_select = on_select
+        and query = query
+        and modify_input_on_select = modify_input_on_select
+        and on_hover_item = on_hover_item in
         let focused_attr =
           match focused_key with
           | Some focused_key when Key.comparator.compare key focused_key = 0 ->
@@ -349,15 +355,15 @@ let create
     Bonsai_web.Effect.Focus.on_effect ~name_for_testing:"query-box" () graph
   in
   let handle_keydown =
-    let%arr inject
+    let%arr inject = inject
     and focused_key_potentially_stale = focused_key
     and focused_key = Bonsai.peek focused_key graph
-    and on_select
-    and expand_direction
-    and suggestion_list_state
-    and blur_input
-    and query
-    and modify_input_on_select in
+    and on_select = on_select
+    and expand_direction = expand_direction
+    and suggestion_list_state = suggestion_list_state
+    and blur_input = blur_input
+    and query = query
+    and modify_input_on_select = modify_input_on_select in
     let open Vdom in
     let open Js_of_ocaml in
     fun ev ->
@@ -413,23 +419,23 @@ let create
   in
   let suggestion_container_id = Bonsai.path_id graph in
   let input_id = Bonsai.path_id graph in
-  let%arr query
-  and focused_key
-  and inject
-  and handle_keydown
-  and suggestion_list_kind
-  and expand_direction
-  and on_focus
-  and items
-  and extra_list_container_attr
-  and extra_input_attr
-  and extra_attr
-  and suggestion_container_id
-  and input_id
-  and focus_attr
-  and focus_input
-  and inject_initialize_suggestion_list
-  and on_blur in
+  let%arr query = query
+  and focused_key = focused_key
+  and inject = inject
+  and handle_keydown = handle_keydown
+  and suggestion_list_kind = suggestion_list_kind
+  and expand_direction = expand_direction
+  and on_focus = on_focus
+  and items = items
+  and extra_list_container_attr = extra_list_container_attr
+  and extra_input_attr = extra_input_attr
+  and extra_attr = extra_attr
+  and suggestion_container_id = suggestion_container_id
+  and input_id = input_id
+  and focus_attr = focus_attr
+  and focus_input = focus_input
+  and inject_initialize_suggestion_list = inject_initialize_suggestion_list
+  and on_blur = on_blur in
   let container_position, suggestions_position, is_open =
     match suggestion_list_kind with
     | Suggestion_list_kind.Transient_overlay ->
@@ -448,9 +454,7 @@ let create
             list of items (or vice versa), we want to keep the list open. Thus,
             we check whether the relatedTarget of the event is one of those two
             elements, in which case we don't close the list. *)
-         match
-           Option.bind (Js.Optdef.to_option ev##.relatedTarget) ~f:Js.Opt.to_option
-         with
+         match Js.Opt.to_option ev##.relatedTarget with
          | Some related_target ->
            let id = Js.to_string related_target##.id in
            if String.equal id suggestion_container_id || String.equal id input_id
@@ -572,19 +576,19 @@ module Collate_map_with_score = struct
   end
 
   let collate
-    (type k cmp)
-    (module Cmp : Comparator.S with type t = k and type comparator_witness = cmp)
-    ~preprocess
-    ~score
-    ~query_is_as_strict
-    ~to_result
-    input
-    query
+        (type k cmp)
+        (module Cmp : Comparator.S with type t = k and type comparator_witness = cmp)
+        ~preprocess
+        ~score
+        ~query_is_as_strict
+        ~to_result
+        input
+        query
     =
     let empty_result = Map.empty (module Scored_key.M (Cmp)) in
     Bonsai.Incr.compute (Bonsai.both input query) ~f:(fun input_and_query ->
       let%pattern_bind.Ui_incr input, query = input_and_query in
-      let%bind.Ui_incr input in
+      let%bind.Ui_incr input = input in
       let len = Map.length input in
       let array = Uniform_array.unsafe_create_uninitialized ~len in
       let () =
@@ -604,7 +608,7 @@ module Collate_map_with_score = struct
          because we never use the index to get an element out of the list)
          of the first query that eliminated an item from the set of result. *)
       let filtered_out_at_index = Array.create ~len Int.max_value in
-      let%map.Ui_incr query in
+      let%map.Ui_incr query = query in
       let rec trim_queries qs =
         match qs with
         | [] -> []
@@ -651,24 +655,24 @@ module Filter_strategy = struct
 end
 
 let stringable
-  (type k cmp)
-  (module Key : Bonsai.Comparator with type t = k and type comparator_witness = cmp)
-  ?initial_query
-  ?max_visible_items
-  ?suggestion_list_kind
-  ?expand_direction
-  ?on_focus
-  ?on_hover_item
-  ?focused_item_attr
-  ?extra_list_container_attr
-  ?extra_input_attr
-  ?extra_attr
-  ?(to_view = fun _ string -> Vdom.Node.text string)
-  ?(modify_input_on_select = Bonsai.return `Reset)
-  ~filter_strategy
-  ~on_select
-  input
-  (* [filter_strategy] is not a [Value.t]; it would be easy to make it one by
+      (type k cmp)
+      (module Key : Bonsai.Comparator with type t = k and type comparator_witness = cmp)
+      ?initial_query
+      ?max_visible_items
+      ?suggestion_list_kind
+      ?expand_direction
+      ?on_focus
+      ?on_hover_item
+      ?focused_item_attr
+      ?extra_list_container_attr
+      ?extra_input_attr
+      ?extra_attr
+      ?(to_view = fun _ string -> Vdom.Node.text string)
+      ?(modify_input_on_select = Bonsai.return `Reset)
+      ~filter_strategy
+      ~on_select
+      input
+      (* [filter_strategy] is not a [Value.t]; it would be easy to make it one by
      using [match%sub] here, but then the model would not be shared between the
      two branches, which is potentially confusing. If make both key modules be
      [Scored_key], then we could move the branch into [f] where the filtering
@@ -676,10 +680,11 @@ let stringable
      [Fuzzy_match] case to pay the cost of the extra data in the key. Since we
      don't expect this parameter to be changed at runtime, it is probably not
      worth the cost to make the parameter dynamic. *)
-    graph
+        graph
   =
   let modify_input_on_select ~get_key _graph =
-    let%arr modify_input_on_select and input in
+    let%arr modify_input_on_select = modify_input_on_select
+    and input = input in
     match modify_input_on_select with
     | `Reset -> fun _ _ -> ""
     | `Don't_change -> fun _ query -> query
@@ -707,7 +712,8 @@ let stringable
         Bonsai.Incr.compute (Bonsai.both query input) ~f:(fun incr ->
           let%pattern_bind.Incr query, input = incr in
           Incr_map.filter_mapi' input ~f:(fun ~key ~data:string ->
-            let%map.Incr string and query in
+            let%map.Incr string = string
+            and query = query in
             if Fuzzy_match.is_match ~char_equal:Char.Caseless.equal ~pattern:query string
             then Some (to_view key string)
             else None)))
@@ -715,7 +721,7 @@ let stringable
       graph
   | Fuzzy_search_and_score ->
     let on_select =
-      let%arr on_select in
+      let%arr on_select = on_select in
       fun (_, key) -> on_select key
     in
     let result =
@@ -736,7 +742,7 @@ let stringable
         ~on_select
         ~f:(fun query graph ->
           let query =
-            let%arr query in
+            let%arr query = query in
             query, Fuzzy_search.Query.create query
           in
           Collate_map_with_score.collate
@@ -752,6 +758,6 @@ let stringable
         ()
         graph
     in
-    let%arr result in
+    let%arr result = result in
     { result with focused_item = Option.map result.focused_item ~f:snd }
 ;;

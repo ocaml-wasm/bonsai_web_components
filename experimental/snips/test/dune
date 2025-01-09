@@ -2,5 +2,6 @@
  (name bonsai_experimental_snips_test)
  (libraries bonsai_experimental_snips bonsai_web bonsai_web_test core
    expect_test_helpers_core.expect_test_helpers_base)
+ (inline_tests (flags -drop-tag no-js -drop-tag 64-bits-only -drop-tag no-wasm) (modes js wasm))
  (preprocess
   (pps ppx_jane bonsai.ppx_bonsai)))

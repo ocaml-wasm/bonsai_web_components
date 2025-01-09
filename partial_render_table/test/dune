@@ -7,5 +7,6 @@
    bonsai_web_ui_partial_render_table_protocol core
    patdiff.expect_test_patdiff incr_map.collate js_of_ocaml
    incr_map.erase_key virtual_dom.ui_effect virtual_dom.vdom_test_helpers)
+ (inline_tests (flags -drop-tag no-js -drop-tag 64-bits-only -drop-tag no-wasm) (modes js wasm))
  (preprocess
   (pps ppx_jane bonsai.ppx_bonsai)))
