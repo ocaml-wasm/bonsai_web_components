@@ -1,5 +1,6 @@
 (library
  (name test_bonsai_web_ui_file)
+ (inline_tests (flags -drop-tag no-js -drop-tag 64-bits-only -drop-tag no-wasm) (modes js wasm))
  (libraries bonsai bonsai_test bonsai_web_ui_file core virtual_dom.ui_effect)
  (preprocess
   (pps bonsai.ppx_bonsai ppx_jane)))

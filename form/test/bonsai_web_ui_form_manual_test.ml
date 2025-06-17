@@ -5031,8 +5031,7 @@ module%test Typed = struct
       Handle.show handle;
       [%expect
         {|
-        ("Form.return was set, but setting is ignored."
-         lib/bonsai/web_ui/form/test/bonsai_web_ui_form_manual_test.ml:LINE:COL)
+        ("Form.return was set, but setting is ignored." :0:-1)
         (Ok (Foo 5))
 
         ==============
@@ -5373,8 +5372,7 @@ let%expect_test "[Form.return] is not settable" =
   Handle.show handle;
   [%expect
     {|
-    ("Form.return was set, but setting is ignored."
-     lib/bonsai/web_ui/form/test/bonsai_web_ui_form_manual_test.ml:LINE:COL)
+    ("Form.return was set, but setting is ignored." :0:-1)
     (Ok 5)
     |}]
 ;;
