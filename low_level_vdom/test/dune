@@ -1,5 +1,6 @@
 (library
  (name mutable_state_tracker_test)
+ (inline_tests (flags -drop-tag no-js -drop-tag 64-bits-only -drop-tag no-wasm) (modes js wasm))
  (libraries bonsai bonsai.proc bonsai_test bonsai_web_ui_low_level_vdom core
    virtual_dom.ui_effect)
  (preprocess

@@ -5248,7 +5248,7 @@ module%test Typed = struct
       [%expect
         {|
         ("Form.return was set, but setting is ignored."
-         lib/bonsai/web_ui/form/test/bonsai_web_ui_form_manual_test.ml:LINE:COL)
+         lib/bonsai_web_components/form/test/bonsai_web_ui_form_manual_test.ml:LINE:COL)
         (Ok (Foo 5))
 
         ==============
@@ -5592,7 +5592,7 @@ let%expect_test "[Form.return] is not settable" =
   [%expect
     {|
     ("Form.return was set, but setting is ignored."
-     lib/bonsai/web_ui/form/test/bonsai_web_ui_form_manual_test.ml:LINE:COL)
+     lib/bonsai_web_components/form/test/bonsai_web_ui_form_manual_test.ml:LINE:COL)
     (Ok 5)
     |}]
 ;;
