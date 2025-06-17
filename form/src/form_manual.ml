@@ -178,7 +178,7 @@ let fallback_to t ~value =
 ;;
 
 module Dynamic = struct
-  let with_default_from_effect effect form graph =
+  let with_default_from_effect effct form graph =
     let open Bonsai.Let_syntax in
     let is_loaded, set_is_loaded =
       Bonsai.state false ~sexp_of_model:[%sexp_of: Bool.t] ~equal:[%equal: Bool.t] graph
@@ -188,8 +188,8 @@ module Dynamic = struct
       | true -> Bonsai.return ()
       | false ->
         let after_display =
-          let%arr effect and set_is_loaded and form in
-          let%bind.Effect default = effect in
+          let%arr effct and set_is_loaded and form in
+          let%bind.Effect default = effct in
           Ui_effect.Many [ set form default; set_is_loaded true ]
         in
         Bonsai.Edge.lifecycle ~after_display graph;
@@ -198,16 +198,16 @@ module Dynamic = struct
     form
   ;;
 
-  let with_default_from_optional_effect effect form graph =
-    let effect =
-      let%arr effect in
+  let with_default_from_optional_effect effct form graph =
+    let effct =
+      let%arr effct in
       (* Returning [Effect.never] means that the subsequent [Form.set] will just
          never occur, which is what we'd like to happen when a none value is produced. *)
-      match%bind.Effect effect with
+      match%bind.Effect effct with
       | None -> Effect.never
       | Some a -> Effect.return a
     in
-    with_default_from_effect effect form graph
+    with_default_from_effect effct form graph
   ;;
 
   let sync_with ?sexp_of_model ~equal ~store_value ~store_set form graph =
@@ -232,13 +232,13 @@ module Dynamic = struct
 
   let with_default default form graph =
     let get_default = Bonsai.peek default graph in
-    let effect =
+    let effct =
       let%arr get_default in
       match%bind.Effect get_default with
       | Active default -> Effect.return default
       | Inactive -> Effect.never
     in
-    with_default_from_effect effect form graph
+    with_default_from_effect effct form graph
   ;;
 
   let with_default_always default form graph =
@@ -341,7 +341,7 @@ module Dynamic = struct
             let%map.Effect result = parse a in
             Poll_result.Finished result)
       in
-      let effect =
+      let effct =
         let%arr parse in
         function
         | Error e -> Poll_result.Finished (Error e) |> Ui_effect.return
@@ -365,7 +365,7 @@ module Dynamic = struct
         ~equal_result:[%equal: Validated.t]
         Bonsai.Edge.Poll.Starting.empty
         value
-        ~effect
+        ~effct
         graph
     in
     let is_stable =

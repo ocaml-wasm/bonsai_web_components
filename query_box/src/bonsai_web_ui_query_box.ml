@@ -376,7 +376,7 @@ let create
     let open Vdom in
     let open Js_of_ocaml in
     fun ev ->
-      let with_prevent_default effect = Effect.Many [ effect; Effect.Prevent_default ] in
+      let with_prevent_default effct = Effect.Many [ effct; Effect.Prevent_default ] in
       let move_next = with_prevent_default (inject Move_next) in
       let move_prev = with_prevent_default (inject Move_prev) in
       let up, down =

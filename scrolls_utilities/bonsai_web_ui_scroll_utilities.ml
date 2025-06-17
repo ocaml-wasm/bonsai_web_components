@@ -65,8 +65,8 @@ module Scroll_into_view = struct
       Ok ()
   ;;
 
-  let effect = Effect.of_sync_fun for_effect
-  let f' ?(smooth = false) ~selector how = effect (smooth, selector, how)
+  let effct = Effect.of_sync_fun for_effect
+  let f' ?(smooth = false) ~selector how = effct (smooth, selector, how)
 end
 
 module To_position_inside_element = struct
@@ -91,10 +91,10 @@ module To_position_inside_element = struct
     f ~smooth ~selector ~x_px ~y_px ~how
   ;;
 
-  let effect = Effect.of_sync_fun for_effect
+  let effct = Effect.of_sync_fun for_effect
 
   let f ?(smooth = false) ~selector ~x_px ~y_px how =
-    effect (smooth, selector, x_px, y_px, how)
+    effct (smooth, selector, x_px, y_px, how)
   ;;
 end
 

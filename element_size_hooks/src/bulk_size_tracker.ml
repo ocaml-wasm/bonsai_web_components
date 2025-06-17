@@ -100,7 +100,7 @@ module Hook = struct
         in
         Apply_trackers.merge !Trackers.the_one_and_only !dimension_groups ~f:{ f }
         |> Collected_effects.to_alist
-        |> List.map ~f:(fun (T (_, effect)) -> effect)
+        |> List.map ~f:(fun (T (_, effct)) -> effct)
       in
       Ui_effect.Expert.handle (Ui_effect.Many events)
     ;;

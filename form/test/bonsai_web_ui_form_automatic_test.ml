@@ -6313,7 +6313,7 @@ let%expect_test "[Form.with_default] sets the form value after a model reset" =
         type t = int Form.t * unit Effect.t
         type incoming = unit
 
-        let incoming (_, effect) () = effect
+        let incoming (_, effct) () = effct
 
         let view (form, _) =
           Sexp.to_string_hum ([%sexp_of: int Or_error.t] (Form.value form))
@@ -6353,7 +6353,7 @@ let%expect_test "[Form.with_default_always] sets the form value after a model re
         type t = int Form.t * unit Effect.t
         type incoming = unit
 
-        let incoming (_, effect) () = effect
+        let incoming (_, effct) () = effct
 
         let view (form, _) =
           Sexp.to_string_hum ([%sexp_of: int Or_error.t] (Form.value form))

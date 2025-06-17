@@ -88,9 +88,9 @@ module State = struct
   let on_pointer_event state element ~f ~event =
     let f event_target pointer_event =
       (match event, state with
-       | Pointer_event.Down, { on_drag_start = Some effect; _ }
-       | Pointer_event.Up, { on_drag_stop = Some effect; _ } ->
-         Effect.Expert.handle pointer_event effect
+       | Pointer_event.Down, { on_drag_start = Some effct; _ }
+       | Pointer_event.Up, { on_drag_stop = Some effct; _ } ->
+         Effect.Expert.handle pointer_event effct
        | _ -> ());
       f event_target pointer_event
     in
@@ -177,8 +177,8 @@ let rec do_update_height_or_width target state =
      | Horizontal -> set_width parent new_length
      | Vertical -> set_height parent new_length);
     Option.iter state.on_drag ~f:(fun on_drag ->
-      let effect = on_drag new_length in
-      Effect.Expert.handle_non_dom_event_exn effect);
+      let effct = on_drag new_length in
+      Effect.Expert.handle_non_dom_event_exn effct);
     return ()
   in
   State.clear_pointer_axis state;
