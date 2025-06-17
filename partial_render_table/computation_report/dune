@@ -1,5 +1,6 @@
 (library
  (name bonsai_web_ui_partial_render_table_computation_report)
+ (inline_tests (flags -drop-tag no-js -drop-tag 64-bits-only -drop-tag no-wasm) (modes js wasm))
  (libraries bonsai bonsai.bench_scenario bonsai_web bonsai_web_test
    bonsai_web_ui_partial_render_table_configs_for_testing core
    incr_map.collate js_of_ocaml incr_map.erase_key virtual_dom.ui_effect

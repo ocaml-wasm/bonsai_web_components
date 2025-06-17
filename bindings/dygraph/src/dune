@@ -6,6 +6,7 @@
     ppx_pattern_bind))
  (js_of_ocaml
   (javascript_files ../dist/dygraph.min.js ../dist/lodash_merge.js))
+ (inline_tests (flags -drop-tag no-js -drop-tag 64-bits-only -drop-tag no-wasm) (modes js wasm))
  (libraries base bonsai.extra_proc bonsai_web bonsai_web.proc
    bonsai_web_ui_low_level_vdom core virtual_dom.css_gen gen_js_api
    ppx_css.inline_css js_of_ocaml virtual_dom.ui_effect)

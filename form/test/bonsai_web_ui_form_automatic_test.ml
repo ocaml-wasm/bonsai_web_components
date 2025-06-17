@@ -6448,7 +6448,7 @@ let%expect_test "[Form.return] is not settable" =
   [%expect
     {|
     ("Form.return was set, but setting is ignored."
-     lib/bonsai/web_ui/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
+     lib/bonsai_web_components/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
     (Ok 5)
 
     ==============
@@ -6476,7 +6476,7 @@ let%expect_test "[Form.return] is not settable, but can log the attempted set if
   [%expect
     {|
     ("Form.return was set, but setting is ignored." (set_value 5)
-     lib/bonsai/web_ui/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
+     lib/bonsai_web_components/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
     (Ok 5)
 
     ==============
@@ -6526,9 +6526,9 @@ let%expect_test "Partially settable form via [Form.return] and [Form.return_sett
   [%expect
     {|
     ("Form.return was set, but setting is ignored." (set_value 1)
-     lib/bonsai/web_ui/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
+     lib/bonsai_web_components/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
     ("Form.return was set, but setting is ignored." (set_value 3)
-     lib/bonsai/web_ui/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
+     lib/bonsai_web_components/form/test/bonsai_web_ui_form_automatic_test.ml:LINE:COL)
     (Ok (
       (form_return          1)
       (form_return_settable 20)
