@@ -1,5 +1,10 @@
 (executables
- (modes byte exe)
+ (modes byte exe js wasm)
+ (js_of_ocaml
+  (enabled_if true)
+  (flags :standard --opt 2 --pretty))
+ (wasm_of_ocaml
+  (flags :standard --opt 2 --pretty))
  (names main)
  (libraries bonsai_bench bonsai_web bonsai_web_ui_partial_render_table
    bonsai_web_ui_partial_render_table_configs_for_testing core core_bench.js
