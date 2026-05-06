@@ -7,9 +7,7 @@
    ppx_expect.runtime ppx_module_timer.runtime)
  (preprocess
   (pps ppx_jane -compare-require-explicit-locality js_of_ocaml-ppx
-    gen_js_api.ppx))
- (wasm_of_ocaml
-  (javascript_files ./fake_codemirror_for_tests.js)))
+    gen_js_api.ppx)))
 
 (rule
  (targets for_ppx.ml-for-review)

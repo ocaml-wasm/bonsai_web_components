@@ -15,7 +15,9 @@
  (preprocess
   (pps ppx_jane bonsai.ppx_bonsai))
  (wasm_of_ocaml
-  (javascript_files ../../codemirror/themes/src/basic-dark.js
+  (javascript_files
+    ../lib/bindings/fake_codemirror_for_tests.js
+    ../../codemirror/themes/src/basic-dark.js
     ../../codemirror/themes/src/basic-light.js
     ../../codemirror/themes/src/gruvbox-dark.js
     ../../codemirror/themes/src/material-dark.js
