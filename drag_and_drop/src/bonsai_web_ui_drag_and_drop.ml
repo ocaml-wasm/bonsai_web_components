@@ -279,6 +279,11 @@ let create_with_drop_position
             let path = Js.to_array event##composedPath |> Array.to_list in
             let target =
               List.find_map path ~f:(fun element ->
+                let (element
+                      : < dataset : 'a Js.t Js.opt Js.readonly_prop > Js.t)
+                  =
+                  Js.Unsafe.coerce element
+                in
                 let%bind.Option dataset = Js.Opt.to_option element##.dataset in
                 let%map.Option drag_target =
                   Js.Opt.to_option
@@ -341,6 +346,9 @@ let create_with_drop_position
            let path = Js.to_array event##composedPath |> Array.to_list in
            let target =
              List.find_map path ~f:(fun element ->
+               let (element : < dataset : 'a Js.t Js.opt Js.readonly_prop > Js.t) =
+                 Js.Unsafe.coerce element
+               in
                let%bind.Option dataset = Js.Opt.to_option element##.dataset in
                let%map.Option drag_target =
                  Js.Opt.to_option (Js.Unsafe.get dataset ("dragTarget" ^ universe_suffix))
