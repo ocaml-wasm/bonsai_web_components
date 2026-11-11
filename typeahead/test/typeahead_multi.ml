@@ -100,8 +100,8 @@ let%expect_test "Attrs are NOT merged when  \
   [%expect
     {|
     ("WARNING: not combining classes"
-     (first (typeahead_multi__inline_class_hash_53949d24dc))
-     (second (typeahead_multi__inline_class_hash_5676b9110b)))
+     (first (typeahead_multi__inline_class_hash_27370a7e7b))
+     (second (typeahead_multi__inline_class_hash_90b4ada97e)))
     <div>
       <input type="text"
              list="bonsai_path_replaced_in_test"

@@ -45,7 +45,7 @@ let%expect_test _ =
     <div>
       <div> Warning! </div>
       <div>
-        You've been disconnected from the server for 5s. There is no need to refresh the page, since the web client will reconnect automatically when the server becomes available again.
+        You've been disconnected from the server for 4s. There is no need to refresh the page, since the web client will reconnect automatically when the server becomes available again.
       </div>
     </div>
     |}];
